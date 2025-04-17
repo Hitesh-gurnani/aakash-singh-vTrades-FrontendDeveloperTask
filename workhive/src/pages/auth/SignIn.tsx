@@ -24,6 +24,11 @@ const auth = app ? getAuth(app) : null;
 const googleProvider = new GoogleAuthProvider();
 
 function SignIn() {
+  console.log("🔥 Firebase config:", {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
