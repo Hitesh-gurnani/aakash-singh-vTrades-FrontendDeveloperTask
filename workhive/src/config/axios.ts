@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an axios instance with custom config
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: "https://aakash-singh-vtrades.onrender.com",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
