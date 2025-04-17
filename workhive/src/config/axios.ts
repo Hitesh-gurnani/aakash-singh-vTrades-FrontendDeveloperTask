@@ -1,8 +1,8 @@
 import axios from "axios";
-import { Config } from "./config";
+
 // Create an axios instance with custom config
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",

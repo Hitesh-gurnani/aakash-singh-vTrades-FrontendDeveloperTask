@@ -44,7 +44,7 @@ function EnterOtp() {
     }
 
     try {
-      await api.post("/api/auth/forgot-password", { email });
+      await api.post("/api/forgot-password", { email });
       setError("");
       alert("New OTP has been sent to your email address");
     } catch (err: any) {
