@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  KeyboardEvent,
-  ChangeEvent,
-  FormEvent,
-} from "react";
+import { useState, useRef, KeyboardEvent, ChangeEvent, FormEvent } from "react";
 import Button from "../../atoms/Button";
 import HeadingDesc from "../../components/HeadingDesc";
 import api from "../../config/axios";
