@@ -5,6 +5,18 @@ import HeadingDesc from "../../components/HeadingDesc";
 import AuthToggle from "../../atoms/AuthToggle";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -32,6 +44,34 @@ function SignIn() {
     } catch (err: any) {
       setError(err.response?.data?.message || "Invalid email or password");
       console.error("Signin error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.idToken;
+      const user = result.user;
+
+      const response = await api.post("/api/google-signin", {
+        token: token,
+        email: user.email,
+      });
+
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", response.data.token);
+
+      navigate("/dashboard");
+    } catch (err: any) {
+      console.error("Google Sign-in error:", err);
+      setError(err.message || "Google sign in failed");
     } finally {
       setLoading(false);
     }
@@ -98,6 +138,8 @@ function SignIn() {
         <Button
           buttonText="Sign in with Google"
           className="bg-[var(--color-primary-400)] flex gap-2 items-center justify-center"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
         />
         <Button
           buttonText="Sign in with Microsoft"

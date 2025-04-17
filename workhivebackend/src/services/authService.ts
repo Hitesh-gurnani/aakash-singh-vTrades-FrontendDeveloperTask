@@ -4,7 +4,12 @@ export const findUserByEmail = (email: string): User | undefined => {
   return users.find((user) => user.email === email);
 };
 
-export const createUser = (email: string, password: string): User => {
+export const createUser = (
+  email: string,
+  password: string,
+  name: any,
+  picture: any
+): User => {
   const newUser: User = { email, password };
   users.push(newUser);
   return newUser;

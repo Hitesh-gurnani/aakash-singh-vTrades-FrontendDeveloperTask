@@ -12,7 +12,7 @@ export const signup = (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return errorHandler(res, "Missing credentials");
   if (findUserByEmail(email)) return errorHandler(res, "User already exists");
-  const user = createUser(email, password);
+  const user = createUser(email, password, "", "");
   res.json({ success: true, message: "Signup successful", user });
 };
 
@@ -44,4 +44,30 @@ export const createNewPassword = (req: Request, res: Response) => {
   if (!updateUserPassword(email, newPassword))
     return errorHandler(res, "User not found or password update failed");
   res.json({ success: true, message: "Password updated successfully" });
+};
+
+export const googleSignIn = async (req: Request, res: Response) => {
+  try {
+    const { email, name, picture } = req.body;
+    let user = findUserByEmail(email);
+    if (!user) {
+      user = createUser(email, "google-auth-user", name, picture);
+    }
+
+    res.json({
+      success: true,
+      message: "Google sign-in successful",
+      user: {
+        email: user.email,
+        name: user.name,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error("Google auth error:", error);
+    res.status(401).json({
+      success: false,
+      message: "Authentication failed",
+    });
+  }
 };
