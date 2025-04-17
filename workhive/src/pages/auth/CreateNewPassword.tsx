@@ -4,12 +4,14 @@ import Button from "../../atoms/Button";
 import InputWithHeading from "../../atoms/InputWithHeading";
 import api from "../../config/axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../../components/Modal/Modal";
 
 function CreateNewPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,14 +42,18 @@ function CreateNewPassword() {
         newPassword: password,
       });
 
-      alert("Password has been updated successfully!");
-      navigate("/auth/signin");
+      setShowSuccessModal(true);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update password");
       console.error("Password update error:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    navigate("/auth/signin");
   };
 
   return (
@@ -81,6 +87,14 @@ function CreateNewPassword() {
           disabled={loading}
         />
       </form>
+
+      <Modal
+        isOpen={showSuccessModal}
+        onClose={handleCloseModal}
+        title="Password Created!"
+        content="Your password has been successfully updated. You can now use your new password to log in."
+        buttonText="Okay"
+      />
     </div>
   );
 }

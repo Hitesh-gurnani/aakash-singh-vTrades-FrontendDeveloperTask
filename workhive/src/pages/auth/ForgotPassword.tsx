@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "../../atoms/Button";
 import InputWithHeading from "../../atoms/InputWithHeading";
 import HeadingDesc from "../../components/HeadingDesc";
+import Modal from "../../components/Modal/Modal";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,7 @@ function ForgotPassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,16 +23,18 @@ function ForgotPassword() {
     try {
       await api.post("/api/forgot-password", { email });
       setSuccess("OTP has been sent to your email address");
-
-      setTimeout(() => {
-        navigate("/auth/enter-otp", { state: { email } });
-      }, 2000);
+      setIsModalOpen(true);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to send OTP");
       console.error("Forgot password error:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    navigate("/auth/enter-otp", { state: { email } });
   };
 
   return (
@@ -58,6 +62,19 @@ function ForgotPassword() {
           disabled={loading}
         />
       </form>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title="Link Sent Successfully!"
+        content={
+          <p>
+            Check your inbox! We’ve sent you an email with instructions to reset
+            your password.
+          </p>
+        }
+        buttonText="Okay"
+      />
     </div>
   );
 }
