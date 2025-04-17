@@ -9,15 +9,17 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "",
 };
 
-console.log(firebaseConfig, "firebaseConfig");
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const isValidConfig = firebaseConfig.apiKey && firebaseConfig.projectId;
+const app = isValidConfig ? initializeApp(firebaseConfig) : null;
+const auth = app ? getAuth(app) : null;
 const googleProvider = new GoogleAuthProvider();
 
 function SignIn() {
@@ -55,6 +57,12 @@ function SignIn() {
   const handleGoogleSignIn = async () => {
     setError("");
     setLoading(true);
+
+    if (!auth) {
+      setError("Firebase authentication is not configured properly");
+      setLoading(false);
+      return;
+    }
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
