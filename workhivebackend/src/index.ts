@@ -9,6 +9,9 @@ const PORT = 3000;
 app.use(cors());
 
 app.use(bodyParser.json());
+app.use("/", (req, res) => {
+  res.send("Ping check");
+});
 app.use("/api", authRoutes);
 
 app.listen(PORT, () => {
