@@ -10,6 +10,7 @@ function EnterOtp() {
   const [loading, setLoading] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const location = useLocation();
+  const receivedOtp = location.state?.otp || "";
   const navigate = useNavigate();
   const email = location.state?.email || "";
 
@@ -92,7 +93,9 @@ function EnterOtp() {
           email || "your email"
         }.`}
       />
-
+      <span className="text-sm text-[var(--color-primary-100)]">
+        {"Received OTP: " + receivedOtp}
+      </span>
       <span
         className="text-[var(--color-primary-100)] text-base font-normal cursor-pointer"
         onClick={handleChangeEmail}

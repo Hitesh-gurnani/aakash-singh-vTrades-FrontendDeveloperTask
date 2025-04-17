@@ -12,6 +12,7 @@ function ForgotPassword() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [otp, setOtp] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,8 +22,9 @@ function ForgotPassword() {
     setLoading(true);
 
     try {
-      await api.post("/api/forgot-password", { email });
+      const response = await api.post("/api/forgot-password", { email });
       setSuccess("OTP has been sent to your email address");
+      setOtp(response.data.otp);
       setIsModalOpen(true);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to send OTP");
@@ -34,7 +36,7 @@ function ForgotPassword() {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    navigate("/auth/enter-otp", { state: { email } });
+    navigate("/auth/enter-otp", { state: { email, otp } });
   };
 
   return (
