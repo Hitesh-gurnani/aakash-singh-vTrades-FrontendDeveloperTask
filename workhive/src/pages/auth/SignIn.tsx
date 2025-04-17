@@ -38,9 +38,10 @@ function SignIn() {
         email,
         password,
       });
-
+      console.log(response.data, "response.data");
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", response.data.token);
+      storage.setItem("auth_token", response.data.token);
+      localStorage.setItem("auth_token", response.data.token);
 
       navigate("/dashboard");
     } catch (err: any) {
@@ -68,7 +69,8 @@ function SignIn() {
       });
 
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", response.data.token);
+      storage.setItem("auth_token", response.data.token);
+      localStorage.setItem("auth_token", response.data.token);
 
       navigate("/dashboard");
     } catch (err: any) {
