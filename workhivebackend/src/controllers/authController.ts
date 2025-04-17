@@ -48,10 +48,18 @@ export const createNewPassword = (req: Request, res: Response) => {
 
 export const googleSignIn = async (req: Request, res: Response) => {
   try {
-    const { email, name, picture } = req.body;
+    const { email } = req.body;
+    if (!email) {
+      return errorHandler(res, "Email not provided in request body");
+    }
+
     let user = findUserByEmail(email);
     if (!user) {
       user = createUser(email, "google-auth-user");
+    }
+
+    if (!user) {
+      return errorHandler(res, "Failed to find or create user");
     }
 
     res.json({
@@ -63,9 +71,6 @@ export const googleSignIn = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Google auth error:", error);
-    res.status(401).json({
-      success: false,
-      message: "Authentication failed",
-    });
+    errorHandler(res, "Authentication failed", 401);
   }
 };
