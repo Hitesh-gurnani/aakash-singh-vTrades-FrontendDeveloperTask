@@ -12,7 +12,7 @@ export const signup = (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return errorHandler(res, "Missing credentials");
   if (findUserByEmail(email)) return errorHandler(res, "User already exists");
-  const user = createUser(email, password, "", "");
+  const user = createUser(email, password);
   res.json({ success: true, message: "Signup successful", user });
 };
 
@@ -51,7 +51,7 @@ export const googleSignIn = async (req: Request, res: Response) => {
     const { email, name, picture } = req.body;
     let user = findUserByEmail(email);
     if (!user) {
-      user = createUser(email, "google-auth-user", name, picture);
+      user = createUser(email, "google-auth-user");
     }
 
     res.json({
@@ -59,8 +59,6 @@ export const googleSignIn = async (req: Request, res: Response) => {
       message: "Google sign-in successful",
       user: {
         email: user.email,
-        name: user.name,
-        profilePicture: user.profilePicture,
       },
     });
   } catch (error) {
